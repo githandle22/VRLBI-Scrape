@@ -1,0 +1,9 @@
+Files that I routinely use for VRLBI Scrape
+
+VRLBI_index.js
+VRLBI_Store.js
+VRLBI_DB_if.js
+VRLBI_Scan.js
+VRLBI_Search.js
+
+probably not json_test.js

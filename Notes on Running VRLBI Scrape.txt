@@ -1,0 +1,36 @@
+
+
+In Command Prompt
+cd OneDrive\Documents\Node Stuff\VRLBI Scrape
+node vrlbi_index.js 12 (searches for valid properties on vrlbi.com) !!! update the sample number in "option 12" to be the next sample to be run
+node vrlbi_index.js 15 (runs a scrape, automatically adjusts the sample number based on properties in propCollection)
+
+At the start of a new year need to:
+1) update the calendar sample dates and week of interest dates in the file VRLBI_index.js (option 21)
+	by hand typing in the new dates and running: node vrlbi_index.js 21
+	be sure to change "year", "date", and "saturdayDate" (date and year!)
+2) in VRLBI_SCRAPER.js near line 477, need to change the year in the following command: end = string.indexOf("2025");
+
+3) in VRLBI_Db_if.js near line 233 in this.writePropBookedData, there may be a magic number:sampleNum: {"$gt":8}
+	the 8 needs to be changed to the last sample number in the previous season
+
+find out why badPropCount is not being written in scanStatus collection
+things to add
+find locLat
+find locLong
+find services (linen, cleaning)
+find add ons
+maybe evaluate /week, /night rates
+
+completed
+1) add a function to test only inactive properties to see if they are still invalid - I think this can be done by adjusting the limits in vrlbi_index.js selection "12" and running selection "12" with the adjusted limits
+2) save all rates from the rate table - booked or not
+	this could be a new collection "rates" with _id as the index
+	for each of the 2000 properties, store the 16 weekly rates
+	also save sample number, but not uniquely so older data are overwritten
+
+
+Properties of interest
+Engleside 2391, 2392, 2836
+
+

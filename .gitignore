@@ -1,0 +1,9 @@
+# Ignore these folders
+Data Output/
+database schema/
+Stuff from Gregor/
+node_modules/
+
+
+
+

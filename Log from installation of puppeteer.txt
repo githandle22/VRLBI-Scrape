@@ -1,0 +1,41 @@
+C:\Users\CBK.WHITEDOG\Documents\Node Stuff\VRLBI Scrape>npm install puppeteer --save
+
+> puppeteer@19.6.2 postinstall C:\Users\CBK.WHITEDOG\Documents\Node Stuff\VRLBI Scrape\node_modules\puppeteer
+> node install.js
+
+internal/modules/cjs/loader.js:491
+  throw new ERR_PACKAGE_PATH_NOT_EXPORTED(basePath, mappingKey);
+  ^
+
+Error [ERR_PACKAGE_PATH_NOT_EXPORTED]: Package subpath './internal/node/install.js' is not defined by "exports" in C:\Users\CBK.WHITEDOG\Documents\Node Stuff\VRLBI Scrape\node_modules\puppeteer\package.json
+    at applyExports (internal/modules/cjs/loader.js:491:9)
+    at trySelf (internal/modules/cjs/loader.js:410:23)
+    at Function.Module._resolveFilename (internal/modules/cjs/loader.js:943:22)
+    at Function.Module._load (internal/modules/cjs/loader.js:842:27)
+    at Module.require (internal/modules/cjs/loader.js:1026:19)
+    at require (internal/modules/cjs/helpers.js:72:18)
+    at Object.<anonymous> (C:\Users\CBK.WHITEDOG\Documents\Node Stuff\VRLBI Scrape\node_modules\puppeteer\install.js:38:27)
+    at Module._compile (internal/modules/cjs/loader.js:1138:30)
+    at Object.Module._extensions..js (internal/modules/cjs/loader.js:1158:10)
+    at Module.load (internal/modules/cjs/loader.js:986:32) {
+  code: 'ERR_PACKAGE_PATH_NOT_EXPORTED'
+}
+npm WARN notsup Unsupported engine for puppeteer@19.6.2: wanted: {"node":">=14.1.0"} (current: {"node":"12.18.2","npm":"6.14.9"})
+npm WARN notsup Not compatible with your version of node/npm: puppeteer@19.6.2
+npm WARN notsup Unsupported engine for cosmiconfig@8.0.0: wanted: {"node":">=14"} (current: {"node":"12.18.2","npm":"6.14.9"})
+npm WARN notsup Not compatible with your version of node/npm: cosmiconfig@8.0.0
+npm WARN notsup Unsupported engine for puppeteer-core@19.6.2: wanted: {"node":">=14.1.0"} (current: {"node":"12.18.2","npm":"6.14.9"})
+npm WARN notsup Not compatible with your version of node/npm: puppeteer-core@19.6.2
+
+npm ERR! code ELIFECYCLE
+npm ERR! errno 1
+npm ERR! puppeteer@19.6.2 postinstall: `node install.js`
+npm ERR! Exit status 1
+npm ERR!
+npm ERR! Failed at the puppeteer@19.6.2 postinstall script.
+npm ERR! This is probably not a problem with npm. There is likely additional logging output above.
+
+npm ERR! A complete log of this run can be found in:
+npm ERR!     C:\Users\CBK.WHITEDOG\AppData\Roaming\npm-cache\_logs\2023-01-31T18_26_15_312Z-debug.log
+
+C:\Users\CBK.WHITEDOG\Documents\Node Stuff\VRLBI Scrape>

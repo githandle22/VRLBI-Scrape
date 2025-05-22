@@ -1,0 +1,226 @@
+NEED TO SET DATABASE BY TYPING IN command line interface>use scrape_vrlbi
+
+Query to find in the collection "inactiveProps" all of the documents where the value of the field "_id" matches the field "_id" in the collection "propCollection" where the field "activeProp" has a value "true". That is, where an active property shoule not be in the "inactiveProps" collection.
+
+db.inactiveProps.aggregate([
+  {
+    $lookup: {
+      from: "propCollection",
+      localField: "_id",
+      foreignField: "_id",
+      as: "matchedProps"
+    }
+  },
+  {
+    $unwind: "$matchedProps"
+  },
+  {
+    $match: {
+      "matchedProps.activeProp": true
+    }
+  },
+  {
+    $project: {
+      _id: 1,  // Include the fields you want in the result
+      // Add other fields you want to include
+    }
+  }
+])
+
+
+
+{locType: "Oceanfront", propType: {$eq: "House"}, 
+
+{ $and: [ {locType: "Oceanfront" }, {propType: "House"}, {beds: {$gt:4}}, {beds: {$lt:6}} ] }
+
+db.propCollection.find( { $and: [ {locType: "Oceanfront" }, {propType: "House"}, {beds: {$gt:4}}, {beds: {$lt:7}} ] } )
+db.propCollection.find( {  	  {locType: "Oceanfront" }, {propType: "House"}, {beds: {$gt:4}}, {beds: {$lt:7}}   } )
+
+Engleside Units B and C
+db.propCollection.find( { $and: [ {bathsHalf: {$eq:1}}, {beds: {$eq:3}}, {bathsFull: {$eq:3}} ] } )	
+
+Beach Haven in location
+db.propCollection.find( { locTown: /.Beach Haven./ } )
+
+{$and:[ { locTown: /.Beach Haven./ }, {beds:4}, {bathsFull:3}, {bathsHalf:1}] }
+
+$subtract [$match: {
+
+
+$match:{		
+  $or: [
+    {
+      sampleNum: 8,
+    },
+    {
+      sampleNum: 10,
+    },
+  ],
+}
+$project:{
+  "storeID":1, "storeName":1,
+  "sumPriceRev":1, "followers":1,
+  "ratings":1
+}
+
+------------------------------------------------------------------------------------------------
+THIS IS A JOIN EXAMPLE: join "orders" with "inventory" to create the "sales" view that contains the fields specified with $project
+db.createView( "sales", "orders", [
+   {
+      $lookup:
+         {
+            from: "inventory",
+            localField: "prodId",
+            foreignField: "prodId",
+            as: "inventoryDocs"
+         }
+   },
+   {
+      $project:
+         {
+           _id: 0,
+           prodId: 1,
+           orderId: 1,
+           numPurchased: 1,
+           price: "$inventoryDocs.price"
+         }
+   },
+      { $unwind: "$price" }
+] )
+
+In the example:
+
+The $lookup stage uses the prodId field in the orders collection to "join" documents in the inventory collection that have matching prodId fields.
+
+The matching documents are added as an array in the inventoryDocs field.
+
+The $project stage selects a subset of the available fields.
+
+The $unwind stage converts the price field from an array to a scalar value.
+__________________________________________________________________________________________________
+Create a view called "Oceanfront_5BR" from "propCollection".
+[ contains a pipeline which, for each document that meets the $and condition, presents the fields specified in $project]
+db.createView( 
+	"Oceanfront_5BR", 
+	"propCollection", [
+   {
+	 $match: { $and: [ {locType: "Oceanfront" }, {propType: "House"}, {beds: {$gt:4}}, {beds: {$lt:6}} ] }
+   },
+   {
+      $project:
+         {
+           _id: 1,
+           baths: 1,
+           sleeps: 1,
+
+         }
+   }
+] )
+
+_____________________________________________________________________________________________________
+***************  this works  **************
+Create a view called "BookedWeeks_7" from "bookedWeeks".
+[ contains a pipeline which, for each document that meets the $match condition, presents the fields specified in $project]
+db.createView( 
+	"BookedWeeks_7", 
+	"bookedWeeks", [
+   {
+	 $match: { weekID: 7 }
+   },
+   {
+      $project:
+         {
+           propID: 1,
+           rate: 1,
+	   saturdayDate: 1
+         }
+   }
+] )
+
+_____________________________________________________________________________________________________
+******* does not work *****************  the "rates" array is empty
+JOIN "Oceanfront_5BR" with "bookedWeeks_7"
+db.createView( "Week_7_Rates", "Oceanfront_5BR", [
+   {
+      $lookup:
+         {
+            from: "bookedWeeks_7",
+            localField: "_id",
+            foreignField: "propID",
+            as: "ratesOutput"
+         }
+   },
+   {
+      $project:
+         {
+           _id: 1,
+	   baths: 1,
+	   sleeps: 1,
+           rate: "$ratesOutput.rate"
+         }
+   }
+] )
+________________________________________________________________________________________________________
+*********** this works *************
+JOIN "propCollection" with "bookedWeeks"
+db.createView( "Oceanfront_Rates", "propCollection", [
+   {
+      $match:
+	 {
+	    locType: "Oceanfront"
+	 }
+   },
+   {
+      $lookup:
+         {
+            from: "bookedWeeks",
+            localField: "_id",
+            foreignField: "propID",
+            as: "ratesOutput"
+         }
+   },
+   {
+      $project:
+         {
+           _id: 1,
+	   baths: 1,
+	   sleeps: 1,
+           rate: "$ratesOutput.rate"
+         }
+   },
+      { $unwind: "$rate" }
+] )
+________________________________________________________________________________________________________
+*********** this works *************
+JOIN "propCollection" with "BookedWeeks_7"
+use _id from a filtered propCollection to lookup rates from "BookedWeeks_7", which is a filtered collection of booked weeks; one week only
+db.createView( "Oceanfront_Rates_Week_7", "propCollection", [
+   {			// filter propCollection
+      $match:
+	 {
+	    locType: "Oceanfront",
+	    propType: "House"
+	 }
+   },
+   {			// use _id from filtered propCollection as index into BookedWeeks
+      $lookup:
+         {
+            from: "BookedWeeks_7",
+            localField: "_id",
+            foreignField: "propID",
+            as: "ratesOutput"
+         }
+   },
+   {			// the output fields
+      $project:
+         {
+           _id: 1,
+	   baths: 1,
+	   sleeps: 1,
+           rate: "$ratesOutput.rate",
+           propName: 1,
+	   locTown: 1
+         }
+   },
+      { $unwind: "$rate" }	// without this stage, rate appears as an array
+] )
